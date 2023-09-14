@@ -1,0 +1,7 @@
+{
+  "*.{ts,tsx}": [
+    "yarn run lint:ts",
+    "yarn run lint:js"
+  ],
+  "*.scss": "yarn run lint:scss"
+}
