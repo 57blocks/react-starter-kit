@@ -20,7 +20,13 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": [
-    "src"
+  "exclude": [
+    "*.cjs",
+    "*.js",
+    "coverage/*",
+    "dist/*",
+    "public/*",
+    "test-results/*",
+    "playwright-report/*",
   ]
 }

@@ -25,6 +25,6 @@
     "rules": {
         "import/extensions": "off",
         "react/jsx-filename-extension": "off",
-        "import/no-extraneous-dependencies": ["error", { "devDependencies": ["**/*.test.tsx", "**/setupTests.ts", "**/*.test.ts", "**/*.spec.ts"] }]
+        "import/no-extraneous-dependencies": ["error", { "devDependencies": ["**/*.test.tsx", "**/setupTests.ts", "playwright.config.ts", "**/*.test.ts", "**/*.spec.ts"] }]
     }
 }

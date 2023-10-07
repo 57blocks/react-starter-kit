@@ -1,0 +1,101 @@
+name: 57blocks react starter kit
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+env:
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  PLAYWRIGHT_BROWSERS_PATH: 0
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+          token: ${{ secrets.BUILD_PAT }}
+      
+      - name: Set-up node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+            
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+        shell: bash
+        
+      - name: Restore yarn cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: yarn-cache-folder-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            yarn-cache-folder-
+      
+      - name: Install dependencies
+        run: yarn install
+
+  test:
+    name: Lint and test
+    needs: setup
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+          token: ${{ secrets.BUILD_PAT }}
+      
+      - name: Set-up node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+        shell: bash
+            
+      - name: Restore yarn cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
+          restore-keys: |
+            yarn-cache-folder-
+      
+      - name: Install dependencies
+        run: yarn install
+      
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+      
+      - name: Run linter
+        run: yarn lint:js
+        
+      - name: Run unit tests
+        run: yarn test
+    
+      - name: Run e2e tests
+        run: yarn e2e
+
+      - name: SonarCloud scan
+        uses: SonarSource/sonarcloud-github-action@master 
+
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-artifacts
+          path: |
+            coverage/lcov-report/
+            playwright-report/
+          retention-days: 30
