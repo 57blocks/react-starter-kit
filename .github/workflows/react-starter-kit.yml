@@ -19,7 +19,6 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.ref }}
-          token: ${{ secrets.BUILD_PAT }}
       
       - name: Set-up node
         uses: actions/setup-node@v3
@@ -52,7 +51,6 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.ref }}
-          token: ${{ secrets.BUILD_PAT }}
       
       - name: Set-up node
         uses: actions/setup-node@v3
@@ -68,7 +66,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
+          key: yarn-cache-folder-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             yarn-cache-folder-
       
