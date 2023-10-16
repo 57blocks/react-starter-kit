@@ -30,16 +30,18 @@
 
 ### Continuous Integration and Deployment
 
-- **GitHub Actions**: GitHub Actions is used for continuous integration and continuous deployment (CI/CD). An example workflow is provided that automates various checks and processes, such as verifying PR descriptions, setting up the development environment, running unit tests and linters, performing end-to-end tests, running code analysis, running Lighthouse tests for performance and accessibility, and deploying the code to a CDN.
+- **GitHub Actions**: GitHub Actions is used for continuous integration and continuous deployment (CI/CD). 
 
 
 ## Getting Started
 
-# Follow these steps to get started with the React Starter Kit:
+Follow these steps to get started with the React Starter Kit:
 
 ### Prerequisites
 
-Make sure you have the following software installed on your machine:- Node.js: The project requires Node.js to be installed. You can download it from the official website: [Node.js](https://nodejs.org/)
+Make sure you have the following software installed on your machine:
+
+- Node.js: The project requires Node.js to be installed. You can download it from the official website: [Node.js](https://nodejs.org/)
 - nvm: Node Version Manager (nvm) allows you to manage multiple Node.js versions. You can install it by following the instructions in the [nvm GitHub repository](https://github.com/nvm-sh/nvm).
 
 ### Clone the Repository
