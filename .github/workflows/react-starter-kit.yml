@@ -10,9 +10,15 @@ env:
   PLAYWRIGHT_BROWSERS_PATH: 0
 
 jobs:
+  check-for-cc:
+    runs-on: ubuntu-latest-4-core
+    steps:
+      - name: Check for conventional commits
+        id: check-for-cc
+        uses: agenthunt/conventional-commit-checker-action@v2.0.0
   setup:
     name: Setup
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-4-core
     permissions: write-all
     steps:
       - uses: actions/checkout@v3
@@ -42,9 +48,9 @@ jobs:
         run: yarn install
 
   test:
-    name: Lint and test
+    name: Lint and Unit Test
     needs: setup
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-4-core
     permissions: write-all
     steps:
       - uses: actions/checkout@v3
@@ -73,27 +79,73 @@ jobs:
       - name: Install dependencies
         run: yarn install
       
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
-      
       - name: Run linter
         run: yarn lint:js
         
-      - name: Run unit tests
+      - name: Run Unit tests
         run: yarn test
     
-      - name: Run e2e tests
-        run: yarn e2e
-
       - name: SonarCloud scan
         uses: SonarSource/sonarcloud-github-action@master 
 
       - name: Upload test artifacts
         uses: actions/upload-artifact@v3
-        if: always()
+        if: failure()
         with:
           name: test-artifacts
           path: |
             coverage/lcov-report/
             playwright-report/
           retention-days: 30
+
+  playwright-tests:
+    name: Playwright Tests
+    timeout-minutes: 60
+    needs: setup
+    runs-on: ubuntu-latest-4-core
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1/4, 2/4, 3/4, 4/4]
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+
+      - name: Set-up node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Restore yarn cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: yarn-cache-folder-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            yarn-cache-folder-
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run integration tests
+        run: npx playwright test --shard ${{ matrix.shard }}
+
+      - name: Upload blob report to GitHub Actions Artifacts
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: all-blob-reports
+          path: viewmaster/blob-report
+          retention-days: 1
+ 
