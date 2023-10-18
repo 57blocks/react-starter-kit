@@ -1,0 +1,13 @@
+name: PR checks
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  check-for-cc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for conventional commits
+        id: check-for-cc
+        uses: agenthunt/conventional-commit-checker-action@v2.0.0

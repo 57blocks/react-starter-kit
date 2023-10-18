@@ -10,12 +10,6 @@ env:
   PLAYWRIGHT_BROWSERS_PATH: 0
 
 jobs:
-  check-for-cc:
-    runs-on: ubuntu-latest-4-core
-    steps:
-      - name: Check for conventional commits
-        id: check-for-cc
-        uses: agenthunt/conventional-commit-checker-action@v2.0.0
   setup:
     name: Setup
     runs-on: ubuntu-latest-4-core
