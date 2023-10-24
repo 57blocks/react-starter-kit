@@ -16,7 +16,7 @@
     "eject": "react-scripts eject",
     "lint-staged": "lint-staged",
     "lint": "run-p 'lint:*'",
-    "lint:css": "stylelint \"src/**/*.scss\"",
+    "lint:scss": "stylelint \"src/**/*.scss\"",
     "lint:js": "eslint src --ext .ts,.tsx",
     "e2e": "playwright test"
   },
@@ -55,6 +55,7 @@
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
     "npm-run-all": "^4.1.5",
+    "sass": "^1.69.4",
     "stylelint": "^15.10.3",
     "stylelint-config-standard-scss": "^11.0.0",
     "typescript": "^5.2.2"
